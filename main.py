@@ -56,14 +56,28 @@ class RBC:
         self.base.adicionar_caso(caso)
 
     def diagnosticar(self, novos_sintomas):
+        # Recuperar
         caso_semelhante = self.base.encontrar_mais_semelhante(novos_sintomas)
-        if caso_semelhante:
-            print("Caso mais semelhante encontrado:", caso_semelhante.sintomas)
-            print("Diagnóstico sugerido com base no caso semelhante:", caso_semelhante.diagnostico)
-            return caso_semelhante.diagnostico
-        else:
+        if not caso_semelhante:
             print("Nenhum caso semelhante encontrado.")
             return None
+
+        print("Caso mais semelhante encontrado:", caso_semelhante.sintomas)
+        print("Diagnóstico sugerido com base no caso semelhante:", caso_semelhante.diagnostico)
+
+        # Reutilizar
+        diagnostico_sugerido = caso_semelhante.diagnostico
+
+        # Revisar
+        diagnostico_final = input(f"Confirma o diagnóstico '{diagnostico_sugerido}'? (s/n): ")
+        if diagnostico_final.lower() == 'n':
+            diagnostico_sugerido = input("Informe o diagnóstico correto: ")
+
+        # Reter
+        self.adicionar_caso(novos_sintomas, diagnostico_sugerido)
+        print("Novo caso armazenado na base de casos.")
+
+        return diagnostico_sugerido
 
 # -------------------------------
 # Exemplo de uso
@@ -82,3 +96,4 @@ if __name__ == "__main__":
     novo_paciente = {'temperatura': 37.4, 'tosse': 'nao', 'dor_de_cabeca': 'nao', 'espirros': 'nao'}
 
     diagnostico = sistema.diagnosticar(novo_paciente)
+    print("Diagnóstico final:", diagnostico)
